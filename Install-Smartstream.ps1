@@ -255,7 +255,6 @@ c:\Windows\SysWOW64\odbcad32.exe
 
 write-output "Please install smartstream"
 Write-Log -Message "running smartstream installer" -Level Info
-cd "\\$domain\$share"
 .\SS\setup.exe
 
 Write-Output "Cleanup" | Write-Log
