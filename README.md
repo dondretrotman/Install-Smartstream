@@ -1,14 +1,14 @@
 # Install-Smartstream
-Powershell Script to automate installation of Smartstream 8
-  Author: Dondre Trotman
-  Date: 2017-08-28
+Powershell Script to automate installation of Smartstream 8 
+  Author: Dondre Trotman 
+  Date: 2017-08-28 
   Version: 2.2 
-  PLEASE RUN AS ADMINISTRATOR OR EXECUTION WILL FAIL!
-  Before running, enter the correct paths in the $domain, $share and $map variables
-  There are a few ways to run this script
-  1. Run Setup.bat as administrator
-  2. Type "set-executionpolicy bypass" Without quotes in powershell to allow script execution. Then run the script
-  3. Log in as Administrator, Right click Install-SmartstreamV1.ps1 and select "Run with PowerShell. Type "y" and enter.
+  PLEASE RUN AS ADMINISTRATOR OR EXECUTION WILL FAIL! 
+  Before running, enter the correct paths in the $domain, $share and $map variables 
+  There are a few ways to run this script 
+  1. Run Setup.bat as administrator 
+  2. Type "set-executionpolicy bypass" Without quotes in powershell to allow script execution. Then run the script 
+  3. Log in as Administrator, Right click Install-SmartstreamV1.ps1 and select "Run with PowerShell. Type "y" and enter. 
 
   Changelog
   Version 2.2 (2017-09-22)
