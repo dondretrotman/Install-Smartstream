@@ -1,17 +1,22 @@
 <#Powershell Script to automate installation of Smartstream 8
   Author: Dondre Trotman
   Date: 2017-08-28
-  Version: 2.1 
+  Version: 2.2 
   PLEASE RUN AS ADMINISTRATOR OR EXECUTION WILL FAIL!
+  Before running, enter the correct paths in the $domain, $share and $map variables
   There are a few ways to run this script
   1. Run Setup.bat as administrator
   2. Type "set-executionpolicy bypass" Without quotes in powershell to allow script execution. Then run the script
-  3. Log in as Administrator, Right click Install-SmartstreamV1.ps1 and select "Run with PowerShell. Type "y" and enter.
+  3. Log in as Administrator, Right click Install-Smartstream.ps1 and select "Run with PowerShell. Type "y" and enter.
 
   Changelog
+  Version 2.2 (2017-09-22)
+  * changed file paths from hardcoded to variables
+  TODO: Change server aliases and ip addresses from hardcoded to variables
+
   Version 2.1 (2017-09-20)
   * Small change to install correct bit version of SQL Native Client
-  * used \\statserver.gov.bb\FINPROD everywhere since I can't guarrantee that Q: will always be mapped under the particular account
+  * used the domain everywhere since I can't guarrantee that Q: will always be mapped under the particular account
   * Check host file to determine if it has been configured already
 
   Version 2.0 (2017-09-14)
@@ -23,6 +28,10 @@
 #>
 
 #set variables
+$domain = "mydomain.com"	#Enter the domain where your smartstream installation resides
+$share = "shared folder on domain"	#Enter the Shared folder on the domain where your smartstream installation resides
+$map = "Z"   #Enter the drive that you want the shared folder to be mapped to
+
 $osbit = 32
 $username = [environment]::UserName
 $x86 = "HKLM:\Software\Microsoft\MSSQLServer\Client\ConnectTo"
@@ -158,13 +167,14 @@ function Write-Log
 }
 Write-Log -Message "Start script"
 Write-Log -Message $log
+cd "\\$domain\$share"
 
-Write-Output "***Step 1: Map \\statserver.gov.bb\finprod to Q:***" | Write-Log
+Write-Output "***Step 1: Map \\$domain\$share to $map***" | Write-Log
 #If Q: already exists (as it should) then we can skip this
 if(!(Test-Path Q:))
 {
-	New-PSDrive -Name "Q" -PSProvider FileSystem -Root "\\statserver.gov.bb\finprod" -Persist
-	Write-Output "Drive Q: mapped successfully..." | Write-Log
+	New-PSDrive -Name "$map" -PSProvider FileSystem -Root "\\$domain\$share" -Persist
+	Write-Output "Drive $map mapped successfully..." | Write-Log
 }
 Else
 {
@@ -174,12 +184,12 @@ Else
 Write-Output "***Step 2: Install  SQL Native Client 2008***" | Write-Log
 if($osbit -eq 32)
 {
-	msiexec /qb /i "\\statserver.gov.bb\FINPROD\SQL Native Client for 2008\sqlncli_X32.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
+	msiexec /qb /i ".\SQL Native Client for 2008\sqlncli_X32.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
 	Write-Output "32bit SQL Native Client installed..." | Write-Log
 }
 if($osbit -eq 64)
 {	
-	msiexec /qb /i "\\statserver.gov.bb\FINPROD\SQL Native Client for 2008\sqlncli_X64.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
+	msiexec /qb /i ".\SQL Native Client for 2008\sqlncli_X64.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
 	Write-Output "64bit SQL Native Client installed..." | Write-Log
 }
 
@@ -213,7 +223,7 @@ if ((test-path -path $x86) -eq $True)
 	New-ItemProperty -Path $x86 -Name GOB0003 -PropertyType string -Value "DBMSSOCN,GOB0003,1433"
 	New-ItemProperty -Path $x86 -Name GOB0004 -PropertyType string -Value "DBMSSOCN,GOB0004,1433"
 	New-ItemProperty -Path $x86 -Name HRPROD -PropertyType string -Value "DBMSSOCN,GOB0004,1433"
-	Write-Output "Created Cliconfig..." | Write-Log
+	Write-Output "Created Cliconfig for x86" | Write-Log
 }
 if ((test-path -path $x64) -ne $True)
 {
@@ -227,7 +237,7 @@ if ((test-path -path $x64) -eq $True)
 	New-ItemProperty -Path $x64 -Name GOB0003 -PropertyType string -Value "DBMSSOCN,GOB0003,1433"
 	New-ItemProperty -Path $x64 -Name GOB0004 -PropertyType string -Value "DBMSSOCN,GOB0004,1433"
 	New-ItemProperty -Path $x64 -Name HRPROD -PropertyType string -Value "DBMSSOCN,GOB0004,1433"
-	Write-Output "Created Cliconfig" | Write-Log
+	Write-Output "Created Cliconfig for x64" | Write-Log
 }
 
 Write-Output "Aliases added successfully..." | Write-Log
@@ -245,18 +255,18 @@ c:\Windows\SysWOW64\odbcad32.exe
 
 write-output "Please install smartstream"
 Write-Log -Message "running smartstream installer" -Level Info
-\\statserver.gov.bb\FINPROD\SS\setup.exe
+.\SS\setup.exe
 
 Write-Output "Cleanup" | Write-Log
 if(Test-Path C:\sstrm80\)
 {
-    Copy-Item -Path \\statserver.gov.bb\FINPROD\SS\PBACC125.DLL -Destination C:\sstrm80\PBACC125.DLL
+    Copy-Item -Path ".\SS\PBACC125.DLL" -Destination C:\sstrm80\PBACC125.DLL
     Write-Output "PBACC125.DLL copied successfully" | Write-Log
 }
 else
 {
     MD C:\sstrm80
-    Copy-Item -Path \\statserver.gov.bb\FINPROD\SS\PBACC125.DLL -Destination C:\sstrm80\PBACC125.DLL
+    Copy-Item -Path ".\SS\PBACC125.DLL" -Destination C:\sstrm80\PBACC125.DLL
     Write-Output "PBACC125.DLL copied successfully. You may need to run the smartstream installer manually" | Write-Log
 }
 Write-Output "Script executed successfully!"  | Write-Log
