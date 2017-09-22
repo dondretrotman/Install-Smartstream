@@ -15,7 +15,7 @@
 
   Version 2.1 (2017-09-20)
   * Small change to install correct bit version of SQL Native Client
-  * used \\statserver.gov.bb\FINPROD everywhere since I can't guarrantee that Q: will always be mapped under the particular account
+  * used the domain everywhere since I can't guarrantee that Q: will always be mapped under the particular account
   * Check host file to determine if it has been configured already
 
   Version 2.0 (2017-09-14)
