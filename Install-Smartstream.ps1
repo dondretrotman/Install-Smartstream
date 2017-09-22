@@ -3,10 +3,11 @@
   Date: 2017-08-28
   Version: 2.2 
   PLEASE RUN AS ADMINISTRATOR OR EXECUTION WILL FAIL!
+  Before running, enter the correct paths in the $domain, $share and $map variables
   There are a few ways to run this script
   1. Run Setup.bat as administrator
   2. Type "set-executionpolicy bypass" Without quotes in powershell to allow script execution. Then run the script
-  3. Log in as Administrator, Right click Install-SmartstreamV1.ps1 and select "Run with PowerShell. Type "y" and enter.
+  3. Log in as Administrator, Right click Install-Smartstream.ps1 and select "Run with PowerShell. Type "y" and enter.
 
   Changelog
   Version 2.2 (2017-09-22)
@@ -27,15 +28,15 @@
 #>
 
 #set variables
+$domain = "mydomain.com"	#Enter the domain where your smartstream installation resides
+$share = "shared folder on domain"	#Enter the Shared folder on the domain where your smartstream installation resides
+$map = "Z"   #Enter the drive that you want the shared folder to be mapped to
+
 $osbit = 32
 $username = [environment]::UserName
 $x86 = "HKLM:\Software\Microsoft\MSSQLServer\Client\ConnectTo"
 $x64 = "HKLM:\Software\Wow6432Node\Microsoft\MSSQLServer\Client\ConnectTo"
 $log = ""
-$path = "statserver.gov.bb"
-$share = "FINPROD"
-$map = "Q"
-
 
 #Preliminary checks
 #check for 64bit OS
