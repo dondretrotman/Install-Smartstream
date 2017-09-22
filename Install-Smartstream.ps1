@@ -167,6 +167,7 @@ function Write-Log
 }
 Write-Log -Message "Start script"
 Write-Log -Message $log
+cd "\\$domain\$share"
 
 Write-Output "***Step 1: Map \\$domain\$share to $map***" | Write-Log
 #If Q: already exists (as it should) then we can skip this
@@ -183,12 +184,12 @@ Else
 Write-Output "***Step 2: Install  SQL Native Client 2008***" | Write-Log
 if($osbit -eq 32)
 {
-	msiexec /qb /i "\\$domain\$share\SQL Native Client for 2008\sqlncli_X32.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
+	msiexec /qb /i ".\SQL Native Client for 2008\sqlncli_X32.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
 	Write-Output "32bit SQL Native Client installed..." | Write-Log
 }
 if($osbit -eq 64)
 {	
-	msiexec /qb /i "\\$domain\$share\SQL Native Client for 2008\sqlncli_X64.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
+	msiexec /qb /i ".\SQL Native Client for 2008\sqlncli_X64.msi" /log C:\Logs\SmartstreamInstall\sqlnclog.txt IACCEPTSQLNCLILICENSETERMS=YES
 	Write-Output "64bit SQL Native Client installed..." | Write-Log
 }
 
@@ -260,13 +261,13 @@ cd "\\$domain\$share"
 Write-Output "Cleanup" | Write-Log
 if(Test-Path C:\sstrm80\)
 {
-    Copy-Item -Path "\\$domain\$share\SS\PBACC125.DLL" -Destination C:\sstrm80\PBACC125.DLL
+    Copy-Item -Path ".\SS\PBACC125.DLL" -Destination C:\sstrm80\PBACC125.DLL
     Write-Output "PBACC125.DLL copied successfully" | Write-Log
 }
 else
 {
     MD C:\sstrm80
-    Copy-Item -Path "\\$domain\$share\SS\PBACC125.DLL" -Destination C:\sstrm80\PBACC125.DLL
+    Copy-Item -Path ".\SS\PBACC125.DLL" -Destination C:\sstrm80\PBACC125.DLL
     Write-Output "PBACC125.DLL copied successfully. You may need to run the smartstream installer manually" | Write-Log
 }
 Write-Output "Script executed successfully!"  | Write-Log
