@@ -1,0 +1,44 @@
+Smartstream installation
+Make sure that User is in Smartstream group in Active Directory
+From an account with Administrator priviledges, Right click Install-SmartstreamV1.ps1 and select "Run with PowerShell"
+Or open PowerShell with as administrator and run the script
+
+1. Map \\statserver.gov.bb\finprod to Q:
+
+2. Install SQL Native Client 2008 from Q:
+
+3. Host File
+	open notepad as administrator
+	open c:\windows\system32\drivers\etc\hosts in notepad
+	add the folloing lines
+	192.168.200.238	gob0003
+	192.168.200.34	gob0004
+
+4. Route
+	open cmd as administrator and type the following line
+	route add -p 192.168.200.0 mask 255.255.255.0 192.168.187.110
+
+5. cliconfig
+	goto c:\windows\syswow64\cliconfig
+	enable TCP/IP
+	click alias -> Add... and add the following entries. Use port 1433
+
+Server Alias	Network Address	Server Name
+FINPROD		TCP/IP		GOB0003
+GOB0003		TCP/IP		GOB0003
+GOB0004		TCP/IP		GOB0004
+HRPROD		TCP/IP		GOB0004
+
+6. ODBC
+	open control panel -> administrative tools -> right click Data Sources (ODBC)(32bit) -> run as administrator
+	goto system dsn -> add -> SQL Native Client (or SQL server as the native client can be buggy)
+	create the folloing DSNs. Use SQL server authentication and the username\password of a smartstream user. Also use default database DBSctlg
+
+Name		Server
+DBSzcrd		gob0003
+FINPROD		gob0003
+GOB0003		gob0003
+GOB0004		gob0004	}
+HRPROD		gob0004	}These use the password from someone with HR access
+
+7. Install from Q:\SS\Setup.exe. Manually copy Q:\FINPROD\SS\PBACC125.DLL to C:\sstrm80\PBACC125.DLL
