@@ -3,7 +3,7 @@ Make sure that User is in Smartstream group in Active Directory
 From an account with Administrator priviledges, Right click Install-SmartstreamV1.ps1 and select "Run with PowerShell"
 Or open PowerShell with as administrator and run the script
 
-1. Map \\statserver.gov.bb\finprod to Q:
+1. Map \\domain\finprod to Q:
 
 2. Install SQL Native Client 2008 from Q:
 
